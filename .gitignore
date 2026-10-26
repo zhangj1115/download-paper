@@ -1,7 +1,19 @@
-# macOS
+# macOS and editors
 .DS_Store
 .AppleDouble
 .LSOverride
 ._*
 *.swp
 Thumbs.db
+
+# Local runtime files
+__pycache__/
+*.pyc
+.venv/
+node_modules/
+downloads/
+SKILL.md.bak-*
+
+# Local configuration and secrets
+credentials.json
+school.json

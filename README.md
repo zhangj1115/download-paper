@@ -1,83 +1,49 @@
 # download-paper
 
-一个用于 **下载学术论文 PDF 及其附件/补充材料** 的 AI Agent skill。基于 opencli 训练。
+用于下载学术论文正文及补充材料的 Agent skill。输入可为 DOI、PMID、论文标题或 URL；支持单篇和批量处理。
 
-能绕过 `curl` 直接下载失败的常见反爬机制：
-- **PMC Proof-of-Work** 反爬挑战
-- **出版商 referer / 付费墙**（Elsevier、Cell、Nature、Wiley 等）
-- **无开放获取副本的付费文献** → 走 **科研通 (ablesci.com) 文献互助** 兜底
-- **开放仓库**（arXiv、bioRxiv、GitHub）直接下载
+## v0.2 新增
 
-输入支持：DOI / PMID / 论文标题 / URL。
+- 批量下载与结果清单；可明确选择下载补充材料（`--si`）或只下载正文（`--no-si`）。
+- 开放获取、出版商 API、机构图书馆访问和 CNKI 路线；需要登录的路线复用用户已有的浏览器会话。
+- 机构与出版商配置工具、数据模板、测试，以及完整的操作说明。
 
----
+旧版保存在 [v0.1](https://github.com/zhangj1115/download-paper/releases/tag/v0.1)，本版保存在 [v0.2](https://github.com/zhangj1115/download-paper/releases/tag/v0.2)。
 
 ## 安装
 
-### 方式 1：git clone（推荐）
-
 ```bash
 git clone https://github.com/zhangj1115/download-paper.git ~/.agents/skills/download-paper
+cd ~/.agents/skills/download-paper
+python3 -m pip install -r requirements.txt
 ```
 
-### 方式 2：手动下载
+批量脚本需要 Node.js 22+；Python 辅助脚本需要 Python 3。部分浏览器和文献检索流程还需要可用的 `opencli` 或 CDP 浏览器代理。具体路线与前提见 [SKILL.md](SKILL.md) 和 [机构访问说明](references/institutional-access.md)。
 
-1. 打开 https://github.com/zhangj1115/download-paper
-2. 点绿色 **Code** 按钮 → **Download ZIP**
-3. 解压后把文件夹重命名为 `download-paper`，移动到 `~/.agents/skills/` 下
+## 使用示例
+
+在支持 skills 的 Agent 中，可直接提出“下载这篇论文及补充材料：DOI ...”。也可以运行：
 
 ```bash
-mkdir -p ~/.agents/skills
-mv ~/Downloads/download-paper-main ~/.agents/skills/download-paper
+node scripts/batch_download.mjs --dois "10.xxxx/example,10.yyyy/example" --si --out ./papers
+node scripts/batch_download.mjs --title "论文标题" --no-si --out ./papers
 ```
 
-### 验证安装
+`--si` 与 `--no-si` 必须二选一。机构访问或出版商 API 需要先配置，相关命令见 [机构访问说明](references/institutional-access.md)。密钥保存在用户本机的 `~/.config/lit-dl/`，不应提交到仓库。
+
+## 测试
 
 ```bash
-ls ~/.agents/skills/download-paper/
-# 应看到: README.md  SKILL.md  scripts/
+node --test tests/unit
+python3 -m unittest discover -s tests/python -p 'test_*.py'
 ```
 
----
+## 目录
 
-## 使用
+- `SKILL.md`：Agent 的完整下载流程。
+- `scripts/`：单篇、批量下载及配置脚本。
+- `src/`、`data/`：Python 配置逻辑及数据文件。
+- `references/`、`examples/`：机构访问说明和清单模板。
+- `tests/`：本地测试。
 
-安装后，在你的 AI Agent（如 zcode / agently 等支持 skills 的客户端）里直接用自然语言触发即可，例如：
-
-- 「下载这篇文献：10.1038/s41586-024-xxxxx」
-- 「把这篇论文及其附件下到 ~/Downloads/papers：PMID 12345678」
-- 「download this paper and supplements: https://www.nature.com/articles/...」
-- 「用 opencli 登录科研通求助下载这篇 Wiley 的文献」
-
-Agent 会自动识别意图并调用本 skill。
-
----
-
-## 依赖
-
-- Python 3（运行 `scripts/download_pdf.py`）
-- 建议配合支持 skills 的 AI Agent 客户端使用
-
----
-
-## 卸载
-
-```bash
-rm -rf ~/.agents/skills/download-paper
-```
-
----
-
-## 文件结构
-
-```
-download-paper/
-├── SKILL.md            # skill 主文档（给 AI agent 读的指令）
-├── scripts/
-│   └── download_pdf.py # PDF 下载脚本
-└── README.md           # 本文件
-```
-
-## License
-
-MIT
+许可证信息见 [LICENSE-nature-downloader](LICENSE-nature-downloader)。
