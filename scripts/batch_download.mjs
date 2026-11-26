@@ -414,7 +414,7 @@ async function downloadSi(proxy, tab, landingUrl, doi, outDir) {
       proxy,
       tab,
       u,
-      path.join(outDir, "SupportingInformation", safe + "__" + name)
+      path.join(outDir, "suppl", safe + "__" + name)
     );
     if (got.ok) n++;
   }

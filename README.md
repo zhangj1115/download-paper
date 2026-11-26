@@ -2,13 +2,18 @@
 
 用于下载学术论文正文及补充材料的 Agent skill。输入可为 DOI、PMID、论文标题或 URL；支持单篇和批量处理。
 
+## v0.3 新增
+
+- 单篇文献目录将正文 PDF 放在顶层，补充材料放在 `suppl/`，论文关联代码放在 `code/`。
+- 通用批量下载与 CNKI 路线将补充材料保存到 `suppl/`。
+
 ## v0.2 新增
 
 - 批量下载与结果清单；可明确选择下载补充材料（`--si`）或只下载正文（`--no-si`）。
 - 开放获取、出版商 API、机构图书馆访问和 CNKI 路线；需要登录的路线复用用户已有的浏览器会话。
 - 机构与出版商配置工具、数据模板、测试，以及完整的操作说明。
 
-旧版保存在 [v0.1](https://github.com/zhangj1115/download-paper/releases/tag/v0.1)，本版保存在 [v0.2](https://github.com/zhangj1115/download-paper/releases/tag/v0.2)。
+发布记录见 [v0.3](https://github.com/zhangj1115/download-paper/releases/tag/v0.3)、[v0.2](https://github.com/zhangj1115/download-paper/releases/tag/v0.2) 和 [v0.1](https://github.com/zhangj1115/download-paper/releases/tag/v0.1)。
 
 ## 安装
 

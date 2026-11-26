@@ -62,7 +62,7 @@ node scripts/batch_download.mjs --title "..." --cnki-format pdf --si --out "<pro
 node scripts/batch_download.mjs --pdf-url "https://arxiv.org/pdf/1706.03762" --title "Attention Is All You Need" --si --out "<project>"
 ```
 
-输出 `{ summary, manifest, results }`;PDF 入 `PDFs/`,原生 HTML/XML 入 `FullText/`,CAJ 入 `CNKI/`,补充材料入 `SupportingInformation/`。manifest 记录路线、OA 证据、accessMode、格式、MIME、字节数、SHA-256、SI 选择与类型化失败状态;疑似敏感字段递归清除。
+输出 `{ summary, manifest, results }`;PDF 入 `PDFs/`,原生 HTML/XML 入 `FullText/`,CAJ 入 `CNKI/`,补充材料入 `suppl/`(与单篇目录的 `suppl/` 约定一致;代码入 `code/`)。manifest 记录路线、OA 证据、accessMode、格式、MIME、字节数、SHA-256、SI 选择与类型化失败状态;疑似敏感字段递归清除。
 
 **Token 纪律**:绝不要把整页 DOM、检索结果或 PDF/SI 字节 eval 回对话上下文,大数据留在脚本内,只回传紧凑状态。交互式 eval 仅用于单篇路线或诊断一篇卡住的论文。
 

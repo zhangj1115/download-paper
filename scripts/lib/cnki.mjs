@@ -182,7 +182,7 @@ async function downloadCnkiSupportingInformation(proxy, target, title, outDir) {
   for (let index = 0; index < links.length; index += 1) {
     const url = links[index];
     const name = (new URL(url).pathname.split("/").pop() || `si-${index + 1}`).replace(/[\/:*?"<>|]+/g, "_");
-    const outPath = path.join(outDir, "SupportingInformation", `${safeCnkiFileName(title, "")}__${name}`);
+    const outPath = path.join(outDir, "suppl", `${safeCnkiFileName(title, "")}__${name}`);
     const downloaded = await fetchAnyToFile(proxy, target, url, outPath, { rejectHtml: true }).catch(() => ({ ok: false }));
     if (downloaded.ok) files.push(downloaded.file);
   }

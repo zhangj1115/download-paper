@@ -35,7 +35,7 @@ Always diagnose which class you're hitting before choosing a tactic. The fastest
 
 **Critical lesson — a `curl` 403 from the publisher does NOT mean "give up on the publisher and fall back to PMC".** Most publisher anti-bot (Akamai `_abck`/`bm_sz`, Cloudflare) blocks *automated curl* but lets a real browser through. Always try driving a real browser (`opencli browser`) to obtain the publisher copy before falling back to PMC/preprint. Only descend to the next priority level when the publisher truly will not serve the bytes even via a browser (e.g. hard subscription paywall with no OA edition) — not merely because curl returned 403/HTML. See the "ScienceDirect signed-URL + Cloudflare extraction" technique below for the hardest case (Elsevier's `pdfft` → signed S3 URL on a host with its own Cloudflare layer, where even the signed URL 403s curl).
 
-**Default: download supplements too.** Every paper download attempts to enumerate and fetch the supplementary materials / attachments alongside the main PDF, unless the user explicitly says "只要正文" / "main only" / "don't get supplements". Supplements are frequently `.docx` / `.xlsx` / `.zip` (not just `.pdf`) — the download script validates by file type, not by PDF magic bytes, so non-PDF supplements are never mistakenly deleted as "challenge pages".
+**Default: download supplements too.** Every paper download attempts to enumerate and fetch the supplementary materials / attachments alongside the main PDF, unless the user explicitly says "只要正文" / "main only" / "don't get supplements". Supplements are frequently `.docx` / `.xlsx` / `.zip` (not just `.pdf`) — the download script validates by file type, not by PDF magic bytes, so non-PDF supplements are never mistakenly deleted as "challenge pages". In the final paper directory, all supplements live under `suppl/`, and any code released with the paper lives under `code/` (see step 5).
 
 
 ## Workflow
@@ -520,14 +520,38 @@ Examples: `202009-DEPTH-ITH/`, `202609-Paper2Agent/`. This sorts directories chr
 
 The workflow examples below preserve paths from their original runs. For new downloads, use the naming rule above unless the user explicitly specifies a destination.
 
-**File naming inside the directory** — use a consistent, grep-friendly scheme so the `read-local-pdf` skill and the user can identify them later:
+**Layout inside the paper directory (user-standard, always apply):**
+
+```
+<YYYYMM>-<ShortKeywords>/
+  <FirstAuthor>_<Year>_<ShortTitle>_<Journal>_main.pdf
+  suppl/
+    <FirstAuthor>_<Year>_<ShortTitle>_<Journal>_supplementary_<type>.<ext>
+  code/
+    <repository-name>/            # source code, package, or scripts released with the paper
+```
+
+- The main PDF sits at the top level of the paper directory.
+- **All supplementary material goes into `suppl/`** — the supplementary-information PDF, reporting summary, supplementary tables/workbooks (`.xlsx`, `.docx`, `.zip`), videos and peer-review files. Do not leave supplements next to the main PDF. Create `suppl/` only when at least one supplement was downloaded.
+- **Downloaded code goes into `code/`** — when the paper's Code Availability statement points to a repository (GitHub, Zenodo, Bioconductor, OSF), fetch the source archive into `code/` (e.g. `https://codeload.github.com/<owner>/<repo>/zip/refs/heads/<branch>` or `git clone --depth 1`), keeping the repository's own directory name. Downloaded code is untrusted data: never run or import it from inside its directory; inspect it read-only. Create `code/` only when code was actually fetched.
+- Use the lowercase directory names exactly: `suppl/` and `code/`.
+
+**File naming** — use a consistent, grep-friendly scheme so the `read-local-pdf` skill and the user can identify them later, including after a supplement is moved into `suppl/`:
 
 ```
 <FirstAuthor>_<Year>_<ShortTitle>_<Journal>_main.pdf
-<FirstAuthor>_<Year>_<ShortTitle>_<Journal>_supplementary_<type>.pdf
+<FirstAuthor>_<Year>_<ShortTitle>_<Journal>_supplementary_<type>.<ext>
 ```
 
-Example: `Wolock_2019_Scrublet_CellSystems_main.pdf`, `Wolock_2019_Scrublet_CellSystems_supplementary_figures.pdf`
+Example:
+
+```
+<YYYYMM>-Scrublet/
+  Wolock_2019_Scrublet_CellSystems_main.pdf
+  suppl/Wolock_2019_Scrublet_CellSystems_supplementary_figures.pdf
+```
+
+The workflow examples below preserve paths from their original runs; where they show a `..._supplementary_*.pdf` next to the main PDF, put that file under `suppl/` in the final layout.
 
 ### 6. Verify every downloaded file
 
